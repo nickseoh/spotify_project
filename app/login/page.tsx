@@ -21,6 +21,7 @@ export default function LoginPage() {
   }
 
   async function handleSignUp() {
+    if (password.length < 6) return setMessage('Password must be at least 6 characters.')
     setLoading(true)
     setMessage('')
     const { data, error } = await supabase.auth.signUp({ email, password })
