@@ -113,7 +113,7 @@ export default function PlaylistView(props: Props) {
           <span className={styles.plCoverHover}><PencilIcon size={40} /><span>Choose photo</span></span>
         </button>
         <div className={styles.plInfo}>
-          <span className={styles.plType}>{playlist.is_public ? 'Public Playlist' : 'Private Playlist'}</span>
+          <span className={styles.plType}>{playlist.is_public !== false ? 'Public Playlist' : 'Private Playlist'}</span>
           <button className={styles.plTitle} data-size={titleSize} onClick={props.onEditDetails}>
             {playlist.title}
           </button>

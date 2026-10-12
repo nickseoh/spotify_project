@@ -79,6 +79,13 @@ export default function LibraryApp() {
         const start = lib.find(p => String(p.id) === last) ?? lib[0]
         if (start) setSelectedId(String(start.id))
       } catch (err) {
+        const partial = (err as { partial?: PlaylistSummary[] }).partial
+        if (partial) {
+          setPlaylists(partial)
+          const last = readLast()
+          const start = partial.find(p => String(p.id) === last) ?? partial[0]
+          if (start) setSelectedId(String(start.id))
+        }
         report(err)
       } finally {
         setLibraryLoaded(true)
@@ -93,7 +100,11 @@ export default function LibraryApp() {
     let cancelled = false
     fetchTracks(selected.id)
       .then(rows => { if (!cancelled) setLoadedTracks({ id, rows }) })
-      .catch(err => { if (!cancelled) report(err) })
+      .catch(err => {
+        if (cancelled) return
+        setLoadedTracks({ id, rows: [] }) // stop showing "Loading songs…"
+        report(err)
+      })
     return () => { cancelled = true }
     // only refetch when the playlist itself changes, not its summary
     // eslint-disable-next-line react-hooks/exhaustive-deps

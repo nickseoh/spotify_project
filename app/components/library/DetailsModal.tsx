@@ -18,7 +18,7 @@ export default function DetailsModal({ playlist, onClose, onSave }: Props) {
   const [title, setTitle] = useState(playlist.title)
   const [description, setDescription] = useState(playlist.description ?? '')
   const [coverUrl, setCoverUrl] = useState(playlist.cover_url ?? '')
-  const [isPublic, setIsPublic] = useState(playlist.is_public)
+  const [isPublic, setIsPublic] = useState(playlist.is_public !== false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 

@@ -86,20 +86,28 @@ drop policy if exists "playlists: owner insert" on public.playlists;
 drop policy if exists "playlists: owner update" on public.playlists;
 drop policy if exists "playlists: owner delete" on public.playlists;
 
-create policy "playlists: owner select" on public.playlists for select using (auth.uid() = user_id);
-create policy "playlists: owner insert" on public.playlists for insert with check (auth.uid() = user_id);
-create policy "playlists: owner update" on public.playlists for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
-create policy "playlists: owner delete" on public.playlists for delete using (auth.uid() = user_id);
+create policy "playlists: owner select" on public.playlists for select using (auth.uid()::text = user_id::text);
+create policy "playlists: owner insert" on public.playlists for insert with check (auth.uid()::text = user_id::text);
+create policy "playlists: owner update" on public.playlists for update using (auth.uid()::text = user_id::text) with check (auth.uid()::text = user_id::text);
+create policy "playlists: owner delete" on public.playlists for delete using (auth.uid()::text = user_id::text);
 
 drop policy if exists "tracks: owner all" on public.playlist_tracks;
 create policy "tracks: owner all" on public.playlist_tracks for all
-  using      (exists (select 1 from public.playlists p where p.id = playlist_id and p.user_id = auth.uid()))
-  with check (exists (select 1 from public.playlists p where p.id = playlist_id and p.user_id = auth.uid()));
+  using      (exists (select 1 from public.playlists p where p.id = playlist_id and p.user_id::text = auth.uid()::text))
+  with check (exists (select 1 from public.playlists p where p.id = playlist_id and p.user_id::text = auth.uid()::text));
 
 -- NOTE: rows created before this migration have user_id = NULL and will be
 -- hidden by the policies above. To claim them for your account, run:
 --   update public.playlists set user_id = '<your auth user id>' where user_id is null;
 
--- 5) Make the Supabase API see the new tables/columns right away
+-- 5) Table permissions for logged-in users. Newer Supabase projects don't
+--    grant these automatically to tables created in the SQL Editor, which
+--    causes "42501: permission denied for table ...". RLS above still limits
+--    every user to their own rows.
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on public.playlists       to authenticated;
+grant select, insert, update, delete on public.playlist_tracks to authenticated;
+
+-- 6) Make the Supabase API see the new tables/columns right away
 --    (fixes "Could not find ... in the schema cache" errors).
 notify pgrst, 'reload schema';
