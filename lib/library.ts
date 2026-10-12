@@ -4,7 +4,7 @@ import { supabase } from './supabase'
 import type { Playlist, PlaylistId, PlaylistSummary, PlaylistTrack, Song } from './types'
 
 // PostgREST codes that mean "the database tables/columns aren't set up yet"
-const SETUP_CODES = new Set(['PGRST200', 'PGRST204', 'PGRST205', '42P01', '42703'])
+const SETUP_CODES = new Set(['PGRST200', 'PGRST204', 'PGRST205', '42P01', '42703', '42501'])
 export const SETUP_MESSAGE =
   'Database setup is incomplete. In Supabase → SQL Editor, run supabase/migrations/001_playlists_library.sql, then reload this page.'
 
