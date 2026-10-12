@@ -99,3 +99,7 @@ create policy "tracks: owner all" on public.playlist_tracks for all
 -- NOTE: rows created before this migration have user_id = NULL and will be
 -- hidden by the policies above. To claim them for your account, run:
 --   update public.playlists set user_id = '<your auth user id>' where user_id is null;
+
+-- 5) Make the Supabase API see the new tables/columns right away
+--    (fixes "Could not find ... in the schema cache" errors).
+notify pgrst, 'reload schema';
