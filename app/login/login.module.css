@@ -1,0 +1,225 @@
+.page {
+  --green: #1db954;
+  --green-hover: #1ed760;
+  --text: #fff;
+  --muted: #b3b3b3;
+  --border: #727272;
+  --tile-gap: 14px;
+
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* ---------- Mosaic backdrop ---------- */
+.mosaicBg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mosaicTilt {
+  position: absolute;
+  top: -30%;
+  left: -20%;
+  width: 140%;
+  transform: rotate(-12deg);
+  filter: blur(14px) brightness(0.55) saturate(1.2);
+}
+.mosaicTrack {
+  animation: mosaicScroll 60s linear infinite;
+}
+.mosaicGrid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: var(--tile-gap);
+  padding-bottom: var(--tile-gap); /* keeps the loop seamless */
+}
+.tile {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+}
+@keyframes mosaicScroll {
+  to {
+    transform: translateY(-50%);
+  }
+}
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.8) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mosaicTrack {
+    animation: none;
+  }
+}
+
+/* ---------- Frosted login card ---------- */
+.stage {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  overflow-y: auto;
+  /* 16px gutter, plus room for the iPhone notch / home bar */
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+.card {
+  margin: auto; /* centers, but still scrolls if the screen is short */
+  width: 100%;
+  max-width: 400px;
+  padding: clamp(28px, 6vw, 40px) clamp(20px, 6vw, 36px);
+  border-radius: 16px;
+  background: rgba(18, 18, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+.logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.title {
+  font-size: clamp(24px, 6vw, 30px);
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: -0.04em;
+  margin-bottom: 28px;
+}
+.field {
+  margin-bottom: 16px;
+}
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  color: var(--text);
+  font-size: 16px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.input::placeholder {
+  color: #6a6a6a;
+}
+.input:hover {
+  border-color: #fff;
+}
+.input:focus {
+  outline: none;
+  border-color: #fff;
+  box-shadow: 0 0 0 1px #fff;
+}
+.btn {
+  width: 100%;
+  height: 48px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green);
+  color: #000;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+}
+.btn:hover:not(:disabled) {
+  background: var(--green-hover);
+  transform: scale(1.03);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.message {
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
+  color: #f15e6c;
+}
+.foot {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 24px;
+}
+.linkBtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.linkBtn:hover {
+  color: var(--green);
+}
+
+/* ---------- Responsive ---------- */
+
+/* Big screens: slightly larger card */
+@media (min-width: 1440px) {
+  .card {
+    max-width: 440px;
+  }
+}
+
+/* Tablets and phones: fewer, bigger mosaic tiles */
+@media (max-width: 768px) {
+  .mosaicGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Phones: card blends into the page, lighter blur for performance */
+@media (max-width: 480px) {
+  .mosaicGrid {
+    grid-template-columns: repeat(4, 1fr);
+    --tile-gap: 10px;
+  }
+  .mosaicTilt {
+    filter: blur(10px) brightness(0.5) saturate(1.2);
+  }
+  .card {
+    background: rgba(18, 18, 18, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+  .logo {
+    margin-bottom: 14px;
+  }
+  .title {
+    margin-bottom: 22px;
+  }
+}
+
+/* Phone turned sideways / very short screens */
+@media (max-height: 560px) {
+  .logo {
+    display: none;
+  }
+  .title {
+    margin-bottom: 16px;
+  }
+}
